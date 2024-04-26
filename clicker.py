@@ -18,7 +18,7 @@ class App(ctk.CTk):
 
         # Window setup
         self.title("Clart's Clicker 2")
-        self.iconbitmap("ClartsClicker2/icon.ico")
+        self.iconbitmap("_internal/icon.ico")
         self.geometry("300x225")
         self.resizable(False, False)
 
