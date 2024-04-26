@@ -5,7 +5,6 @@ from pynput.keyboard import Listener
 from tkinter import *
 import customtkinter as ctk
 
-
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -18,38 +17,42 @@ class App(ctk.CTk):
         self.min_click_delay = 0.001
 
         # Window setup
-        self.title("Clart's Clicker 2.1")
-        self.geometry("293x180")
+        self.title("Clart's Clicker 2")
+        self.iconbitmap("ClartsClicker2/icon.ico")
+        self.geometry("300x225")
         self.resizable(False, False)
 
         # Frames defined
-        self.frame1 = ctk.CTkFrame(self)
+        self.frameB1 = ctk.CTkFrame(self, 300, 100)
+        self.frameB1.pack(pady=10)
+        self.frameB2 = ctk.CTkFrame(self, 200, 25)
+        self.frameB2.pack(pady=0)
+
+        self.frame1 = ctk.CTkFrame(self.frameB1, 150, 100)
         self.frame1.grid(column=0, row=0, padx=10, pady=10)
-        self.frame2 = ctk.CTkFrame(self)
-        self.frame2.grid(column=1, row=0, padx=10)
+        self.frame2 = ctk.CTkFrame(self.frameB1, 150, 100)
+        self.frame2.grid(column=1, row=0, padx=10, pady=10)
 
         # Frame1 items
-        self.start_button = ctk.CTkButton(self.frame1, 100, 25, text="Start", command=self.start_clicking)
-        self.start_button.grid(column=0, row=0, padx=10, pady=10)
-        self.stop_button = ctk.CTkButton(self.frame1, 100, 25, state="disabled", text="Stop", command=self.stop_clicking)
-        self.stop_button.grid(column=0, row=1, padx=10, pady=10)
-        self.option_dropdown = ctk.CTkOptionMenu(self.frame1, 100, 25, values=["Left Click", "Right Click"])
-        self.option_dropdown.grid(column=0, row=2, padx=10, pady=10)
-
+        self.start_button = ctk.CTkButton(self.frame1, 100, 25, text="Start", font=("Helvetica", 12, "bold"), command=self.start_clicking)
+        self.start_button.pack(padx=10, pady=10)
+        self.stop_button = ctk.CTkButton(self.frame1, 100, 25, state="disabled", text="Stop", font=("Helvetica", 12, "bold"), command=self.stop_clicking)
+        self.stop_button.pack(padx=10, pady=10)
+        self.option_dropdown = ctk.CTkOptionMenu(self.frame1, 100, 25, values=["Left Click", "Right Click"], font=("Helvetica", 12, "bold"),)
+        self.option_dropdown.pack(padx=10, pady=10)
+        
         # Frame2 items
-        self.delay_entry = ctk.CTkEntry(self.frame2, 100, 25, placeholder_text="100")
-        self.delay_entry.grid(column=0, row=0, padx=10, pady=10)
-        self.delay_info = ctk.CTkLabel(self.frame2, 100, 25, text="delay in ms")
-        self.delay_info.grid(column=0, row=1, padx=10, pady=10)
-        self.set_delay_button = ctk.CTkButton(self.frame2, 100, 25, text="Set Delay", command=self.set_delay)
-        self.set_delay_button.grid(column=0, row=2, padx=10, pady=10)
+        self.delay_entry = ctk.CTkEntry(self.frame2, 100, 25, placeholder_text="100", font=("Helvetica", 12, "bold"),)
+        self.delay_entry.pack(padx=10, pady=10)
+        self.set_delay_button = ctk.CTkButton(self.frame2, 100, 25, text="Set Delay (ms)", font=("Helvetica", 12, "bold"), command=self.set_delay)
+        self.set_delay_button.pack(padx=10, pady=10)
+        self.set_delay_default_button = ctk.CTkButton(self.frame2, 100, 25, text="Set Default", font=("Helvetica", 12, "bold"), command=self.set_delay_default)
+        self.set_delay_default_button.pack(padx=10, pady=10)
 
-        # Info blocks
-        self.i1 = ctk.CTkLabel(self, text="The built in keybind is `")
-        self.i1.grid(column=0, row=2, padx=10)
-        self.i2 = ctk.CTkLabel(self, text="clart's clicker v2.1")
-        self.i2.grid(column=1, row=2)
-
+        # Frame3 items
+        self.iL1 = ctk.CTkLabel(self.frameB2, text="Click ( ` ) to toggle clicking\nClart's Clicker v2.1.1", font=("Helvetica", 12, "bold"))
+        self.iL1.pack(padx=65, pady=5)
+        
         # Key listener setup
         self.listener_thread = threading.Thread(target=self.start_listener, daemon=True)
         self.listener_thread.start()
@@ -82,6 +85,11 @@ class App(ctk.CTk):
             self.click_delay = max(delay / 1000, self.min_click_delay)
         except ValueError:
             pass
+    
+    def set_delay_default(self):
+        self.click_delay = 0.1
+        self.delay_entry.delete(0, 'end')
+        self.delay_entry.configure(placeholder_text="100")
 
     def on_press(self, key):
         if hasattr(key, 'char') and key.char == self.selected_key:
